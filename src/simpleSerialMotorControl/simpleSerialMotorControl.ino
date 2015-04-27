@@ -1,20 +1,18 @@
 
 #include <SoftwareSerial.h>
 
-// This is used for the max length off the command
-#define maxLength 16
-String command = String(maxLength);
+String command = String();
 boolean commandComplete = false; // flag for the command reading
 
 // Motor A pins
 int dir1PinA = 2;
-int dir2PinA = 3;
-int speedPinA = 6; // Needs to be a PWM pin to be able to control motor speed
+int dir2PinA = 4;
+int speedPinA = 3; // Needs to be a PWM pin to be able to control motor speed
 
 // Motor B pins
-int dir1PinB = 4;
-int dir2PinB = 5;
-int speedPinB = 7; // Needs to be a PWM pin to be able to control motor speed
+int dir1PinB = 5;
+int dir2PinB = 7;
+int speedPinB = 6; // Needs to be a PWM pin to be able to control motor speed
 
 
 /*
@@ -39,12 +37,8 @@ void setup() {
   // initialize debugging serial
   Serial.begin(9600);
   
-  // initialize bluetooth serial and say hello
+  // initialize bluetooth serial
   bluetoothSerial.begin(9600);
-  
-  // clear out the string
-  command = "";
-  
   
   //Set the output to L298N Dual H-Bridge Motor Controller Pins
   pinMode(dir1PinA, OUTPUT);
@@ -62,7 +56,6 @@ void loop() {
   }
 
   if (commandComplete == true) {
-    Serial.println("Command complete");
     processCommand();
   }
 
@@ -82,8 +75,7 @@ void getIncomingBTChars() {
 void processCommand() {
   if (commandCorrect()) {
     Serial.print("Processing ");
-    Serial.print(command);
-    Serial.println();
+    Serial.println(command);
     // Motor Command
     if (command.charAt(3) == 'M') {
       char motor = command.charAt(4);
@@ -152,14 +144,13 @@ int parseSpeed(String arg) {
 }
 
 boolean commandCorrect() {
-  Serial.println(command);
-  boolean ret = false;
   if (command.charAt(0) == 'C' &&
       command.charAt(1) == 'M' &&
-      command.charAt(2) == 'D') {
-    ret = true;
+      command.charAt(2) == 'D' &&
+      command.length() < 10 ) {
+    return true;
   }
-  return ret;
+  return false;
 }
 
 void motorAForward(int speed) {
