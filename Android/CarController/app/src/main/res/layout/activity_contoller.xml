@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="Disconnect"
         android:id="@+id/disconnect"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
     <Button
@@ -36,43 +36,94 @@
         android:layout_height="wrap_content"
         android:text="Motor A Stop"
         android:id="@+id/motorastop"
-        android:layout_alignTop="@+id/accel_ctrl"
+        android:layout_below="@+id/motoraforward"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/motoraforward" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IMU Control"
+        android:textOn="on"
+        android:textOff="off"
+        android:id="@+id/accel_ctrl"
+        android:checked="false"
+        android:layout_above="@+id/disconnect"
+        android:layout_alignEnd="@+id/disconnect" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="X"
-        android:id="@+id/xAccel"
-        android:layout_alignParentBottom="true"
+        android:text="Azimuth :"
+        android:id="@+id/textView"
+        android:layout_alignBottom="@+id/disconnect"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Y"
-        android:id="@+id/yAccel"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/xAccel" />
+        android:text="New Text"
+        android:id="@+id/azimuth"
+        android:layout_alignTop="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Z"
-        android:id="@+id/zAccel"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/yAccel" />
+        android:text="Roll :"
+        android:id="@+id/textView2"
+        android:layout_above="@+id/textView"
+        android:layout_alignParentStart="true" />
 
-    <Switch
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Accelerometer Control"
-        android:textOn="on"
-        android:textOff="off"
-        android:id="@+id/accel_ctrl"
-        android:checked="false"
-        android:layout_below="@+id/disconnect"
-        android:layout_alignParentEnd="true" />
+        android:text="New Text"
+        android:id="@+id/roll"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pitch :"
+        android:id="@+id/textView3"
+        android:layout_above="@+id/textView2"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Text"
+        android:id="@+id/pitch"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_toEndOf="@+id/textView3" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Servo 45"
+        android:id="@+id/servo45"
+        android:layout_alignTop="@+id/motoraforward"
+        android:layout_alignEnd="@+id/accel_ctrl"
+        android:layout_alignStart="@+id/disconnect" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Servo 90"
+        android:id="@+id/servo90"
+        android:layout_below="@+id/servo45"
+        android:layout_alignEnd="@+id/accel_ctrl"
+        android:layout_alignStart="@+id/servo45" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Servo 135"
+        android:id="@+id/servo135"
+        android:layout_alignTop="@+id/motorareverse"
+        android:layout_alignEnd="@+id/accel_ctrl"
+        android:layout_alignStart="@+id/servo90" />
 
 </RelativeLayout>

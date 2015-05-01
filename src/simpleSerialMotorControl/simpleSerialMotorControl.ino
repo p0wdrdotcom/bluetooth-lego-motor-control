@@ -1,5 +1,6 @@
 
 #include <SoftwareSerial.h>
+#include <Servo.h>
 
 String command = String();
 boolean commandComplete = false; // flag for the command reading
@@ -14,6 +15,10 @@ int dir1PinB = 5;
 int dir2PinB = 7;
 int speedPinB = 6; // Needs to be a PWM pin to be able to control motor speed
 
+// Servo Pin
+int servoAPin = 11;
+
+Servo servoA;
 
 /*
 Command Motor Direction Speed (0-255)
@@ -47,6 +52,13 @@ void setup() {
   pinMode(dir1PinB, OUTPUT);
   pinMode(dir2PinB, OUTPUT);
   pinMode(speedPinB, OUTPUT);
+  
+  //Setup the servos
+  servoA.attach(servoAPin);
+  Serial.println("Setup servo");
+  //"Zero" the servo
+  servoA.write(90);
+  delay(500);
 
 }
 
@@ -77,7 +89,48 @@ void processCommand() {
     Serial.print("Processing ");
     Serial.println(command);
     // Motor Command
-    if (command.charAt(3) == 'M') {
+    
+    char componentChar = command.charAt(3);
+    switch (componentChar) {
+      case 'M':
+        processMotorCommand(command);   
+        break;
+        
+      case 'S':
+        processServoCommand(command);
+        break;
+        
+      default:
+        return clearCommand();
+      
+    }
+  }
+  //bin the command
+  clearCommand();
+}
+
+void processServoCommand(String command){
+  char servo = command.charAt(4);
+  int angle = parseAngle(command.substring(5));
+  
+  switch (servo) {
+    case 'A':
+      servoADrive(angle);
+      break;
+    
+    default:
+      return;
+  }
+}
+
+void servoADrive(int angle){
+  if (angle <= 180 && angle >=0){
+    servoA.write(angle);
+  }
+}
+
+
+void processMotorCommand(String command){
       char motor = command.charAt(4);
       char direction = command.charAt(5);
       int speed = parseSpeed(command.substring(6));
@@ -118,10 +171,6 @@ void processCommand() {
           return clearCommand();
         }
       }
-    }
-  }
-  //bin the command
-  clearCommand();
 }
 
 void clearCommand () {
@@ -141,6 +190,17 @@ int parseSpeed(String arg) {
     speed = 0;
   }
   return speed;
+}
+
+int parseAngle(String arg) {
+  int angle = arg.toInt();
+  if (angle > 180){
+    angle = 180;
+  }
+  if (angle < 0) {
+    angle = 0;
+  }
+  return angle;
 }
 
 boolean commandCorrect() {
