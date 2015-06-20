@@ -105,8 +105,7 @@
         android:text="Servo 45"
         android:id="@+id/servo45"
         android:layout_alignTop="@+id/motoraforward"
-        android:layout_alignEnd="@+id/accel_ctrl"
-        android:layout_alignStart="@+id/disconnect" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -114,8 +113,8 @@
         android:text="Servo 90"
         android:id="@+id/servo90"
         android:layout_below="@+id/servo45"
-        android:layout_alignEnd="@+id/accel_ctrl"
-        android:layout_alignStart="@+id/servo45" />
+        android:layout_alignStart="@+id/servo45"
+        android:layout_alignEnd="@+id/servo45" />
 
     <Button
         android:layout_width="wrap_content"
@@ -123,7 +122,33 @@
         android:text="Servo 135"
         android:id="@+id/servo135"
         android:layout_alignTop="@+id/motorareverse"
-        android:layout_alignEnd="@+id/accel_ctrl"
-        android:layout_alignStart="@+id/servo90" />
+        android:layout_alignStart="@+id/servo90"
+        android:layout_alignEnd="@+id/servo90" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Motor B Forward"
+        android:id="@+id/motorbforward"
+        android:layout_alignTop="@+id/servo45"
+        android:layout_alignEnd="@+id/accel_ctrl" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Motor B Stop"
+        android:id="@+id/motorbstop"
+        android:layout_alignTop="@+id/servo90"
+        android:layout_alignEnd="@+id/motorbforward"
+        android:layout_alignStart="@+id/motorbforward" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Motor B Reverse"
+        android:id="@+id/motorbreverse"
+        android:layout_below="@+id/motorbstop"
+        android:layout_alignEnd="@+id/motorbstop"
+        android:layout_alignStart="@+id/motorbstop" />
 
 </RelativeLayout>

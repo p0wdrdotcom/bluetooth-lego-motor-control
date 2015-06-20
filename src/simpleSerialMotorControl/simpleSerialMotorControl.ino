@@ -66,11 +66,23 @@ void loop() {
   if (bluetoothSerial.available() > 0) {
     getIncomingBTChars();
   }
+  if (Serial.available() > 0) {
+    getIncomingSerialChars();
+  }
 
   if (commandComplete == true) {
     processCommand();
   }
 
+}
+
+void getIncomingSerialChars() {
+  char inChar = Serial.read();
+  if (inChar == 59 || inChar == 10 || inChar == 13) { // complete the command if there is a semi colon, Line Feed or Carriage Return
+    commandComplete = true;
+  } else {
+    command += inChar;
+  }
 }
 
 
@@ -126,6 +138,7 @@ void processServoCommand(String command){
 void servoADrive(int angle){
   if (angle <= 180 && angle >=0){
     servoA.write(angle);
+    delay(15);// Wait for the servo
   }
 }
 

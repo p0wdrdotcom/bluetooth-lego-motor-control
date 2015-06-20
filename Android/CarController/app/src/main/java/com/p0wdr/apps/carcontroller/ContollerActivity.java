@@ -45,6 +45,9 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
     Button motorAForward;
     Button motorAReverse;
     Button motorAStop;
+    Button motorBForward;
+    Button motorBReverse;
+    Button motorBStop;
     Button servo45;
     Button servo90;
     Button servo135;
@@ -108,6 +111,10 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
         motorAReverse = (Button) findViewById(R.id.motorareverse);
         motorAStop = (Button) findViewById(R.id.motorastop);
 
+        motorBForward = (Button) findViewById(R.id.motorbforward);
+        motorBReverse = (Button) findViewById(R.id.motorbreverse);
+        motorBStop = (Button) findViewById(R.id.motorbstop);
+
         servo45 = (Button) findViewById(R.id.servo45);
         servo90 = (Button) findViewById(R.id.servo90);
         servo135 = (Button) findViewById(R.id.servo135);
@@ -157,6 +164,24 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
                 setMotorAStop();
             }
         });
+        motorBForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMotorBForward();
+            }
+        });
+        motorBReverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMotorBReverse();
+            }
+        });
+        motorBStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMotorBStop();
+            }
+        });
         servo45.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,6 +221,18 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
 
     private void setMotorAStop() {
         sendCommandViaBluetooth("CMDMAS;".toString());
+    }
+
+    private void setMotorBForward() {
+        sendCommandViaBluetooth("CMDMBF255;".toString());
+    }
+
+    private void setMotorBReverse() {
+        sendCommandViaBluetooth("CMDMBR255;".toString());
+    }
+
+    private void setMotorBStop() {
+        sendCommandViaBluetooth("CMDMBS;".toString());
     }
 
     private void sendCommandViaBluetooth(String command) {
