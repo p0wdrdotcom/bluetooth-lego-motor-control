@@ -53,10 +53,12 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
     Button servo135;
 
     Switch accelCtrltoggle;
+    Switch tankCtrlToggle;
     String lastServoCommand = "";
     String lastMotorCommand = "";
     private boolean isBluetoothConnected = false;
     private boolean acceptAccelerometerInput = false;
+    private boolean tankVesusServoInput = false;
     BluetoothSocket bluetoothSocket;
 
     private static UUID SERIAL_DEVICE_UUID = java.util.UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -202,6 +204,15 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
         });
 
 
+        tankCtrlToggle = (Switch) findViewById(R.id.tank_ctrl);
+        tankCtrlToggle.setChecked(tankVesusServoInput);
+        tankCtrlToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                tankVesusServoInput = isChecked;
+            }
+        });
+
         accelCtrltoggle = (Switch) findViewById(R.id.accel_ctrl);
         accelCtrltoggle.setChecked(acceptAccelerometerInput);
         accelCtrltoggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -251,6 +262,9 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
     private void sendMotorAForward(int speed) {
         sendMotorCommand("CMDMAF" + speed + ";");
     }
+    private void sendMotorBForward(int speed) {
+        sendMotorCommand("CMDMBF" + speed + ";");
+    }
 
     private void sendMotorCommand(String command) {
         if (!lastMotorCommand.equals(command)) {
@@ -262,9 +276,15 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
     private void sendMotorAReverse(int speed) {
         sendMotorCommand("CMDMAR" + speed + ";");
     }
+    private void sendMotorBReverse(int speed) {
+        sendMotorCommand("CMDMBR" + speed + ";");
+    }
 
     private void stopMotorA() {
         sendMotorCommand("CMDMAS;");
+    }
+    private void stopMotorB() {
+        sendMotorCommand("CMDMBS;");
     }
 
 
@@ -281,29 +301,54 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
         if (acceptAccelerometerInput) {
             double rollValue =  sensorFusion.getRoll();
             double pitchValue =  sensorFusion.getPitch();
-
-            // Motor control
-            // Upper bound the roll
-            if (rollValue > 0){
-                rollValue = 0;
-            }
-            int speed = makeSpeedFromRoll(rollValue);
-            if (speed == 0){
-                stopMotorA();
-            } else {
-                if (rollValue > -90){
-                    sendMotorAForward(speed);
+            
+            
+            if (tankVesusServoInput) {
+                // Gate the pitch
+                pitchValue = Math.min(pitchValue, 100);
+                pitchValue = Math.max(pitchValue, -100);
+                int speedDiff = (int) pitchValue;
+                int speed = makeSpeedFromRoll(rollValue);
+                if (speed == 0){
+                    stopMotorA();
+                    stopMotorB();
                 } else {
-                    sendMotorAReverse(speed);
+                    if (rollValue > -90){
+                        sendMotorAForward(Math.max(speed - speedDiff, 0));
+                        sendMotorBForward(Math.min(speed + speedDiff, 255));
+                    } else {
+                        sendMotorAReverse(Math.max(speed - speedDiff, 0));
+                        sendMotorBReverse(Math.min(speed + speedDiff, 255));
+                    }
                 }
+                
+                
+            } else {
+
+                // Motor control
+                // Upper bound the roll
+                if (rollValue > 0){
+                    rollValue = 0;
+                }
+                int speed = makeSpeedFromRoll(rollValue);
+                if (speed == 0){
+                    stopMotorA();
+                } else {
+                    if (rollValue > -90){
+                        sendMotorAForward(speed);
+                    } else {
+                        sendMotorAReverse(speed);
+                    }
+                }
+                // Servo Control
+                // Gate the pitch
+                pitchValue = Math.min(pitchValue, 50);
+                pitchValue = Math.max(pitchValue, -50);
+                int angle = makeAngleFromPitch(pitchValue);
+                sendServoAAngle(angle);
             }
 
-            // Servo Control
-            // Gate the pitch
-            pitchValue = Math.min(pitchValue, 50);
-            pitchValue = Math.max(pitchValue, -50);
-            int angle = makeAngleFromPitch(pitchValue);
-            sendServoAAngle(angle);
+            
 
         }
     }
@@ -361,16 +406,18 @@ public class ContollerActivity extends ActionBarActivity implements SensorEventL
     private void registerSensorManagerListeners(){
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_UI);
+                SensorManager.SENSOR_DELAY_NORMAL);
 
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                SensorManager.SENSOR_DELAY_UI);
+                SensorManager.SENSOR_DELAY_NORMAL);
 
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_UI);
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
+
+    
 
     @Override
     protected void onResume() {

@@ -151,4 +151,15 @@
         android:layout_alignEnd="@+id/motorbstop"
         android:layout_alignStart="@+id/motorbstop" />
 
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tank"
+        android:textOn="on"
+        android:textOff="off"
+        android:id="@+id/tank_ctrl"
+        android:checked="false"
+        android:layout_above="@+id/pitch"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
