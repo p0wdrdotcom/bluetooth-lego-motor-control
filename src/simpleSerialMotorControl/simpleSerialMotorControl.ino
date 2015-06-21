@@ -43,7 +43,7 @@ void setup() {
   Serial.begin(9600);
   
   // initialize bluetooth serial
-  bluetoothSerial.begin(9600);
+  bluetoothSerial.begin(57600);
   
   //Set the output to L298N Dual H-Bridge Motor Controller Pins
   pinMode(dir1PinA, OUTPUT);
@@ -55,7 +55,6 @@ void setup() {
   
   //Setup the servos
   servoA.attach(servoAPin);
-  Serial.println("Setup servo");
   //"Zero" the servo
   servoA.write(90);
   delay(500);

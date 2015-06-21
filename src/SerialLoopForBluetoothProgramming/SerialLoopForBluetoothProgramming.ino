@@ -4,7 +4,7 @@
 SoftwareSerial bluetoothSerial(12, 13);
 void setup() {
   Serial.begin(9600);
-  bluetoothSerial.begin(9600);
+  bluetoothSerial.begin(57600);
 }
 
 void loop() {
