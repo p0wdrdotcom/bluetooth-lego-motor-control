@@ -1,19 +1,10 @@
 
 #include <SoftwareSerial.h>
 #include <Servo.h>
+#include <L298N.h>
 
 String command = String();
 boolean commandComplete = false; // flag for the command reading
-
-// Motor A pins
-int dir1PinA = 2;
-int dir2PinA = 4;
-int speedPinA = 3; // Needs to be a PWM pin to be able to control motor speed
-
-// Motor B pins
-int dir1PinB = 5;
-int dir2PinB = 7;
-int speedPinB = 6; // Needs to be a PWM pin to be able to control motor speed
 
 // Servo Pin
 int servoAPin = 11;
@@ -38,20 +29,14 @@ CMDMAS
 // Setup a Software serial port for the HC-06 using 12 and 13 for RX and TX
 SoftwareSerial bluetoothSerial(12, 13);
 
+L298N motorController;
+
 void setup() {
   // initialize debugging serial
   Serial.begin(9600);
   
   // initialize bluetooth serial
   bluetoothSerial.begin(57600);
-  
-  //Set the output to L298N Dual H-Bridge Motor Controller Pins
-  pinMode(dir1PinA, OUTPUT);
-  pinMode(dir2PinA, OUTPUT);
-  pinMode(speedPinA, OUTPUT);
-  pinMode(dir1PinB, OUTPUT);
-  pinMode(dir2PinB, OUTPUT);
-  pinMode(speedPinB, OUTPUT);
   
   //Setup the servos
   servoA.attach(servoAPin);
@@ -150,15 +135,15 @@ void processMotorCommand(String command){
       if (motor == 'A') {
         switch (direction) {
         case 'F':
-          motorAForward(speed);
+          motorController.motorAForward(speed);
           break;
 
         case 'R':
-          motorAReverse(speed);
+          motorController.motorAReverse(speed);
           break;
 
         case 'S':
-          motorAStop(); //ignore the speed
+          motorController.motorAStop(); //ignore the speed
           break;
 
         default:
@@ -168,15 +153,15 @@ void processMotorCommand(String command){
       if (motor == 'B') {
         switch (direction) {
         case 'F':
-          motorBForward(speed);
+          motorController.motorBForward(speed);
           break;
 
         case 'R':
-          motorBReverse(speed);
+          motorController.motorBReverse(speed);
           break;
 
         case 'S':
-          motorBStop(); //ignore the speed
+          motorController.motorBStop(); //ignore the speed
           break;
 
         default:
@@ -223,38 +208,4 @@ boolean commandCorrect() {
     return true;
   }
   return false;
-}
-
-void motorAForward(int speed) {
-  analogWrite(speedPinA, speed);
-  digitalWrite(dir1PinA, LOW);
-  digitalWrite(dir2PinA, HIGH);
-}
-void motorBForward(int speed) {
-  analogWrite(speedPinB, speed);
-  digitalWrite(dir1PinB, LOW);
-  digitalWrite(dir2PinB, HIGH);
-}
-
-void motorAReverse(int speed) {
-  analogWrite(speedPinA, speed);
-  digitalWrite(dir1PinA, HIGH);
-  digitalWrite(dir2PinA, LOW);
-}
-void motorBReverse(int speed) {
-  analogWrite(speedPinB, speed);
-  digitalWrite(dir1PinB, HIGH);
-  digitalWrite(dir2PinB, LOW);
-}
-
-void motorAStop() {
-  analogWrite(speedPinA, 0);
-  digitalWrite(dir1PinA, LOW);
-  digitalWrite(dir2PinA, HIGH);
-}
-
-void motorBStop() {
-  analogWrite(speedPinB, 0);
-  digitalWrite(dir1PinB, LOW);
-  digitalWrite(dir2PinB, HIGH);
 }
